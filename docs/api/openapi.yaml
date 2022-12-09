@@ -1,0 +1,272 @@
+openapi: '3.0.2'
+info:
+  title: STFU AND CLICK APP
+  version: '1.0.0'
+servers:
+  - url: '/'
+    description: stfu and click app
+
+paths:
+  /api/v1/sessions:
+    post:
+      operationId: createSession
+      summary: Authenticate user
+      tags:
+        - Sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john@doe.com
+              required: ['email']
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: MjE5NjE5ZGQtOTY5Yi00NWRiLWFkYjgtMGJmMGU4MGM4MDUw
+                required: ['token']
+        '400':
+          $ref: '#/components/responses/BadRequestErrorResponse'
+  /api/v1/users:
+    post:
+      operationId: createUser
+      summary: Create a new user
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: 'john@doe.com'
+              required: ['email']
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 'caeb2a6a-bd1d-41cc-bfdf-5d4514ace591'
+                required: ['token']
+        '400':
+          $ref: '#/components/responses/BadRequestErrorResponse'
+  /api/v1/addTeamClick/{teamId}:
+    post:
+      operationId: addTeamClick
+      summary: Add click to the team
+      security:
+       - bearer: []
+      tags:
+        - Teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Unique team ID. See `/teams`
+          schema:
+            type: string
+            example: 123456
+          required: true
+      responses:
+        '200':
+          description: ok
+        '400':
+          $ref: '#/components/responses/BadRequestErrorResponse'
+  /api/v1/teams:
+    get:
+      operationId: getTeams
+      summary: Get teams
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/Team'
+                    - $ref: '#/components/schemas/ClickCount'
+                    - type: object
+                      properties:
+                        users:
+                          type: array
+                          items:
+                            type: object
+                            allOf:
+                              - $ref: '#/components/schemas/User'
+                              - $ref: '#/components/schemas/ClickCount'
+                      required: ['users']
+
+        '400':
+          $ref: '#/components/responses/BadRequestErrorResponse'
+  /api/v1/teams/{teamId}:
+    get:
+        operationId: getTeamByTeamId
+        summary: Get team by teamId
+        tags:
+          - Teams
+        responses:
+          '200':
+            description: ok
+            content:
+              application/json:
+                schema:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/Team'
+                    - $ref: '#/components/schemas/ClickCount'
+                    - type: object
+                      properties:
+                        users:
+                          type: array
+                          items:
+                            type: object
+                            allOf:
+                              - $ref: '#/components/schemas/User'
+                              - $ref: '#/components/schemas/ClickCount'
+                      required: ['users']
+
+          '400':
+            $ref: '#/components/responses/BadRequestErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '2309234802'
+        email:
+          type: string
+          example: john@doe.com
+      required: ['email', 'id']
+    Team:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Team
+        id:
+          type: string
+          example: '23409823'
+      required: ['name', 'id']
+    ClickCount:
+      type: object
+      properties:
+        clickCount:
+          type: number
+          example: 1000
+      required: ['clickCount']
+    HttpError:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: number
+        errorCode:
+          type: string
+        errorData:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        errorClass:
+          type: string
+        stack:
+          type: string
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        example: eStFg+5eAObcu0nDjNKB1A==
+      allowEmptyValue: false
+  responses:
+    UnauthorizedErrorResponse:
+      description: Unauthorized access
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    UnprocessableEntityErrorResponse:
+      description: "Validation isn't passing - unprocessable_entity"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    BadRequestErrorResponse:
+      description: 'Request not processed - bad_request'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotFoundErrorResponse:
+      description: 'Entity not found - not_found'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    ForbiddenErrorResponse:
+      description: 'Permission denied - forbidden'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    MethodNotAllowedResponse:
+      description: 'Method not allowed'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    TooManyRequestsResponse:
+      description: 'Too many requests'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    BadGatewayErrorResponse:
+      description: 'Bad gateway'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+  requestBodies:
+    RefreshTokenRequestBody:
+      content:
+        application/json:
+          schema:
+            properties:
+              refreshToken:
+                type: string
+            required:
+              - refreshToken
