@@ -52,7 +52,10 @@ paths:
                 email:
                   type: string
                   example: 'john@doe.com'
-              required: ['email']
+                teamName:
+                  type: string
+                  example: Abinader
+              required: ['email', 'teamName']
       responses:
         '200':
           description: ok
