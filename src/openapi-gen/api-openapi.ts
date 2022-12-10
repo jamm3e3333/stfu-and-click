@@ -3,31 +3,23 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
   "/api/v1/sessions": {
-    /** Authenticate user */
     post: operations["createSession"];
   };
   "/api/v1/users": {
-    /** Create a new user */
     post: operations["createUser"];
   };
   "/api/v1/addTeamClick/{teamId}": {
-    /** Add click to the team */
     post: operations["addTeamClick"];
   };
   "/api/v1/teams": {
-    /** Get teams */
     get: operations["getTeams"];
   };
   "/api/v1/teams/{teamId}": {
-    /** Get team by teamId */
     get: operations["getTeamByTeamId"];
   };
 }
-
-export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
@@ -60,49 +52,49 @@ export interface components {
     };
   };
   responses: {
-    /** @description Unauthorized access */
+    /** Unauthorized access */
     UnauthorizedErrorResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** @description Validation isn't passing - unprocessable_entity */
+    /** Validation isn't passing - unprocessable_entity */
     UnprocessableEntityErrorResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** @description Request not processed - bad_request */
+    /** Request not processed - bad_request */
     BadRequestErrorResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** @description Entity not found - not_found */
+    /** Entity not found - not_found */
     NotFoundErrorResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** @description Permission denied - forbidden */
+    /** Permission denied - forbidden */
     ForbiddenErrorResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** @description Method not allowed */
+    /** Method not allowed */
     MethodNotAllowedResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** @description Too many requests */
+    /** Too many requests */
     TooManyRequestsResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** @description Bad gateway */
+    /** Bad gateway */
     BadGatewayErrorResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
@@ -113,7 +105,7 @@ export interface components {
     Id: string;
   };
   requestBodies: {
-    RefreshTokenRequestBody?: {
+    RefreshTokenRequestBody: {
       content: {
         "application/json": {
           refreshToken: string;
@@ -121,26 +113,12 @@ export interface components {
       };
     };
   };
-  headers: never;
-  pathItems: never;
 }
 
-export type external = Record<string, never>;
-
 export interface operations {
-
   createSession: {
-    /** Authenticate user */
-    requestBody?: {
-      content: {
-        "application/json": {
-          /** @example john@doe.com */
-          email: string;
-        };
-      };
-    };
     responses: {
-      /** @description ok */
+      /** ok */
       200: {
         content: {
           "application/json": {
@@ -151,10 +129,7 @@ export interface operations {
       };
       400: components["responses"]["BadRequestErrorResponse"];
     };
-  };
-  createUser: {
-    /** Create a new user */
-    requestBody?: {
+    requestBody: {
       content: {
         "application/json": {
           /** @example john@doe.com */
@@ -162,8 +137,10 @@ export interface operations {
         };
       };
     };
+  };
+  createUser: {
     responses: {
-      /** @description ok */
+      /** ok */
       200: {
         content: {
           "application/json": {
@@ -174,47 +151,60 @@ export interface operations {
       };
       400: components["responses"]["BadRequestErrorResponse"];
     };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @example john@doe.com */
+          email: string;
+          /** @example Abinader */
+          teamName: string;
+        };
+      };
+    };
   };
   addTeamClick: {
-    /** Add click to the team */
     parameters: {
-        /** @description Unique team ID. See `/teams` */
       path: {
+        /** Unique team ID. See `/teams` */
         teamId: string;
       };
     };
     responses: {
-      /** @description ok */
-      200: never;
+      /** ok */
+      200: unknown;
       400: components["responses"]["BadRequestErrorResponse"];
     };
   };
   getTeams: {
-    /** Get teams */
     responses: {
-      /** @description ok */
+      /** ok */
       200: {
         content: {
-          "application/json": (components["schemas"]["Team"] & components["schemas"]["ClickCount"] & ({
-              users: (components["schemas"]["User"] & components["schemas"]["ClickCount"])[];
-            }))[];
+          "application/json": (components["schemas"]["Team"] &
+            components["schemas"]["ClickCount"] & {
+              users: (components["schemas"]["User"] &
+                components["schemas"]["ClickCount"])[];
+            })[];
         };
       };
       400: components["responses"]["BadRequestErrorResponse"];
     };
   };
   getTeamByTeamId: {
-    /** Get team by teamId */
     responses: {
-      /** @description ok */
+      /** ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Team"] & components["schemas"]["ClickCount"] & ({
-            users: (components["schemas"]["User"] & components["schemas"]["ClickCount"])[];
-          });
+          "application/json": components["schemas"]["Team"] &
+            components["schemas"]["ClickCount"] & {
+              users: (components["schemas"]["User"] &
+                components["schemas"]["ClickCount"])[];
+            };
         };
       };
       400: components["responses"]["BadRequestErrorResponse"];
     };
   };
 }
+
+export interface external {}
