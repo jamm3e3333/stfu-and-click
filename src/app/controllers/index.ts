@@ -4,6 +4,7 @@ import { Request, RequestHandler, Response, Router } from 'express'
 import { defaults } from 'lodash'
 import * as util from '../util'
 import { authenticateToken, getBearerToken } from '../services/jwtService'
+import * as openapi from '../../openapi-gen'
 
 const pipeMiddleware = (...middlewares: RequestHandler[]) => {
   const router = Router({ mergeParams: true })
@@ -21,6 +22,13 @@ const bindMiddleware: RequestHandler = async (req, res, next) => {
 }
 
 export type HttpContext = util.Unpromise<ReturnType<typeof createHttpCtx>>
+
+export type HttpContextTyped<TOpenAPIRoute, TMethod extends string = 'post'> = {
+  requestBody: openapi.OpenAPIRouteRequestBody<TOpenAPIRoute, TMethod>
+  param: openapi.OpenAPIRouteParam<TOpenAPIRoute> extends Record<string, any>
+    ? openapi.OpenAPIRouteParam<TOpenAPIRoute>
+    : Record<string, string>
+} & Pick<HttpContext, 'authenticated' | 'baseUrl' | 'user'>
 
 const getBaseUrl = (req: Request) => {
   return `${req.protocol}://${req.get('host') ?? ''}`
