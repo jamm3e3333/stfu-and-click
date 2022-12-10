@@ -26,15 +26,22 @@
   "dependencies": {
     "configuru": "^0.6.2",
     "cors": "^2.8.5",
+    "cosmas": "^3.3.3",
     "express": "^4.18.2",
     "express-openapi-validator": "^5.0.0",
+    "firebase-admin": "^11.3.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "p-pipe": "^3.1.0",
+    "pino": "^8.7.0",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
     "@ackee/styleguide-backend-config": "^0.3.7",
+    "@types/cors": "^2.8.13",
     "@types/express": "^4.17.14",
     "@types/jsonwebtoken": "^8.5.9",
+    "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.12",
     "openapi-typescript": "^6.1.0",
     "tsc-watch": "^6.0.0",
