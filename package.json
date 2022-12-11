@@ -12,7 +12,9 @@
     "start": "node -r source-map-support/register dist/index.js",
     "build:watch": "tsc --watch",
     "start-lr": "tsc-watch --onSuccess \"npm run start\"",
-    "build:docs": "openapi-typescript docs/api/openapi.yaml --output src/openapi-gen/api-openapi.ts"
+    "build:docs": "openapi-typescript docs/api/openapi.yaml --output src/openapi-gen/api-openapi.ts",
+    "ci-lint": "eslint '**/*.js' -f codeframe -f checkstyle -o ./output/checkstyle-result.xml && prettier --check '**/*.{ts,js,json,md}'",
+    "lint-fix": "prettier --check '**/*.{ts,js,json,md}' --write '**/*.{ts,js,json,md}' && eslint '**/*.js' -f codeframe --fix"
   },
   "repository": {
     "type": "git",

@@ -50,6 +50,18 @@ export interface components {
       errorClass?: string;
       stack?: string;
     };
+    U4000: {
+      /** @example U4000 */
+      code?: string;
+    };
+    U4001: {
+      /** @example U4001 */
+      code?: string;
+    };
+    T4001: {
+      /** @example T4001 */
+      code?: string;
+    };
   };
   responses: {
     /** Unauthorized access */
@@ -58,8 +70,8 @@ export interface components {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** Validation isn't passing - unprocessable_entity */
-    UnprocessableEntityErrorResponse: {
+    /** Unauthorized access */
+    NotAuthenticatedErrorResponse: {
       content: {
         "application/json": components["schemas"]["HttpError"];
       };
@@ -76,42 +88,9 @@ export interface components {
         "application/json": components["schemas"]["HttpError"];
       };
     };
-    /** Permission denied - forbidden */
-    ForbiddenErrorResponse: {
-      content: {
-        "application/json": components["schemas"]["HttpError"];
-      };
-    };
-    /** Method not allowed */
-    MethodNotAllowedResponse: {
-      content: {
-        "application/json": components["schemas"]["HttpError"];
-      };
-    };
-    /** Too many requests */
-    TooManyRequestsResponse: {
-      content: {
-        "application/json": components["schemas"]["HttpError"];
-      };
-    };
-    /** Bad gateway */
-    BadGatewayErrorResponse: {
-      content: {
-        "application/json": components["schemas"]["HttpError"];
-      };
-    };
   };
   parameters: {
     Id: string;
-  };
-  requestBodies: {
-    RefreshTokenRequestBody: {
-      content: {
-        "application/json": {
-          refreshToken: string;
-        };
-      };
-    };
   };
 }
 
@@ -128,6 +107,7 @@ export interface operations {
         };
       };
       400: components["responses"]["BadRequestErrorResponse"];
+      404: components["responses"]["NotFoundErrorResponse"];
     };
     requestBody: {
       content: {
@@ -152,6 +132,14 @@ export interface operations {
         };
       };
       400: components["responses"]["BadRequestErrorResponse"];
+      /** Invalid data */
+      422: {
+        content: {
+          "application/json": Partial<components["schemas"]["U4000"]> &
+            Partial<components["schemas"]["U4001"]> &
+            Partial<components["schemas"]["T4001"]>;
+        };
+      };
     };
     requestBody: {
       content: {
@@ -175,6 +163,8 @@ export interface operations {
       /** ok */
       200: unknown;
       400: components["responses"]["BadRequestErrorResponse"];
+      401: components["responses"]["NotAuthenticatedErrorResponse"];
+      403: components["responses"]["UnauthorizedErrorResponse"];
     };
   };
   getTeams: {
@@ -193,6 +183,12 @@ export interface operations {
     };
   };
   getTeamByTeamId: {
+    parameters: {
+      path: {
+        /** Unique team ID. See `/teams` */
+        teamId: string;
+      };
+    };
     responses: {
       /** ok */
       200: {
