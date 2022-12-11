@@ -44,7 +44,7 @@ const createHttpCtx = async (httpContext: { req: Request; res: Response }) => {
   return {
     user,
     authenticated,
-    params: defaults({}, req.headers, req.params, req.query) as {
+    param: defaults({}, req.headers, req.params, req.query) as {
       [key: string]: string
     },
     requestBody: req.body,
@@ -80,9 +80,12 @@ export const service = (
     }
   })
 
-export const httpFinalHandler: RequestHandler = (_req, res, next) => {
+export const httpFinalHandler: RequestHandler = (req, res, _next) => {
   res.status(404)
-  next(new NotFound())
+  res.send({
+    404: 'Not Found',
+    request: req.originalUrl,
+  })
 }
 
 export const cors = createCors({})
