@@ -2,6 +2,7 @@ import { BadRequest } from 'express-openapi-validator/dist/openapi.validator'
 import * as jwt from 'jsonwebtoken'
 import config from '../../config'
 import { NotAuthenticated, NotAuthorized } from '../errors/classes'
+import { getUserForUserId } from '../repositories/userRepository'
 
 type UserPayload = ReturnType<typeof getUserPayload>
 
@@ -22,20 +23,13 @@ export type UserJwtPayload = UserPayload & { exp: number; iat: number }
 export const verifyToken = async (token: string, secret: string) => {
   try {
     const decoded = jwt.verify(token, secret) as UserJwtPayload
+    const user = await getUserForUserId({ id: decoded.user.id })
 
-    //TODO: get user from db
-    const userRecord = { id: '1' }
-
-    if (!userRecord) {
+    if (!user) {
       throw new NotAuthenticated()
     }
 
-    //TODO: translate user from db
-    const user = {
-      id: userRecord.id,
-    }
-
-    return { user, decoded }
+    return { user: user, decoded }
   } catch (error) {
     if (error instanceof NotAuthorized) throw error
     if (error instanceof NotAuthenticated) throw error

@@ -1,5 +1,5 @@
 import logger from 'cosmas'
-import config from '../config'
+import config from './config'
 
 let baseLogger = logger({
   ...config.logger,
