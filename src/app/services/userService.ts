@@ -14,16 +14,23 @@ export const handlePostUser = async (
   util.pipe(
     () => ctrl.getContextTyped<openapi.paths['/api/v1/users']>(context),
     async context => {
-      const email = context.requestBody.email
+      const email = context.requestBody.email.trim().toLowerCase()
       if (!validateEmail(email)) {
         throw new ValidationError(E_CODES.U4001)
       }
-      const userTeam = await teamRepo.createTeam({
-        name: context.requestBody.teamName,
-      })
+      const teamName = context.requestBody.teamName.trim()
+      if (!teamName.length) {
+        throw new ValidationError(E_CODES.T4001)
+      }
+      const [existingTeam] = await teamRepo.getTeamForName({ name: teamName })
+      const team = existingTeam?.id
+        ? existingTeam
+        : await teamRepo.createTeam({
+            name: context.requestBody.teamName,
+          })
       const user = await createUser({
         email,
-        teamId: userTeam.id,
+        teamId: team.id,
       })
       const token = jwt.generateToken({
         user: {
