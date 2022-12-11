@@ -6,6 +6,12 @@ find the 📝 API documentation [here](./docs/api/openapi.yaml) written in swagg
 1. Install [NodeJS](https://nodejs.org/en/download/)
 2. Install npm dependencies `npm run ci`
 3. Create firestore database or run with firestore emulators
+  - to work with real firestore database create service account key and add it to the env vars:
+  ```json
+    ...
+    "SERVICE_ACCOUNT": "...",
+    ...
+  ```
 
 ## 🔧 Configuration
 
