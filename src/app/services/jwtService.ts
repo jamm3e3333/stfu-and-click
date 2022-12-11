@@ -4,11 +4,10 @@ import config from '../../config'
 import { NotAuthenticated, NotAuthorized } from '../errors/classes'
 import { getUserForUserId } from '../repositories/userRepository'
 
-type UserPayload = ReturnType<typeof getUserPayload>
-
-export const getUserPayload = (param: { userId: string; email: string }) => {
-  return {
-    user: { id: param.userId, email: param.email },
+interface UserPayload {
+  user: {
+    id: string
+    email: string
   }
 }
 
