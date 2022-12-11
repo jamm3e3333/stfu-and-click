@@ -14,4 +14,8 @@ export const E_CODES = setCustomErrors({
     code: 'U4001',
     message: 'Invalid email.',
   },
+  T4000: {
+    code: 'T4000',
+    message: 'Team already exists.',
+  },
 } as const)
