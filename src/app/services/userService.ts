@@ -3,6 +3,7 @@ import { createUser } from '../repositories/userRepository'
 import * as ctrl from '../controllers'
 import * as util from '../util'
 import * as jwt from '../services/jwtService'
+import * as teamRepo from '../repositories/teamRepository'
 import { validateEmail } from '../../utils/validationUtils'
 import { ValidationError } from '../errors/classes'
 import { E_CODES } from '../errors'
@@ -17,9 +18,12 @@ export const handlePostUser = async (
       if (!validateEmail(email)) {
         throw new ValidationError(E_CODES.U4001)
       }
+      const userTeam = await teamRepo.createTeam({
+        name: context.requestBody.teamName,
+      })
       const user = await createUser({
         email,
-        teamId: '1',
+        teamId: userTeam.id,
       })
       const token = jwt.generateToken({
         user: {
