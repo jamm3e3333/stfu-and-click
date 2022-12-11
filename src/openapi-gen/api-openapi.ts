@@ -101,9 +101,14 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            /** @example MjE5NjE5ZGQtOTY5Yi00NWRiLWFkYjgtMGJmMGU4MGM4MDUw */
-            token: string;
-          };
+            /** @example caeb2a6a-bd1d-41cc-bfdf-5d4514ace591 */
+            token?: string;
+            /** @example sfjli3j23li */
+            teamId?: string;
+          } & components["schemas"]["User"] & {
+              token: unknown;
+              teamId: unknown;
+            };
         };
       };
       400: components["responses"]["BadRequestErrorResponse"];
@@ -126,8 +131,11 @@ export interface operations {
           "application/json": {
             /** @example caeb2a6a-bd1d-41cc-bfdf-5d4514ace591 */
             token?: string;
+            /** @example adfjasdfoi3 */
+            teamId?: string;
           } & components["schemas"]["User"] & {
               token: unknown;
+              teamId: unknown;
             };
         };
       };
