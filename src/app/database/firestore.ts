@@ -13,5 +13,5 @@ export const getDataFromQuerySnapshots = async <T>(
   return (await snapshots).docs.map(x => ({
     id: x.id,
     ...x.data(),
-  })) as T[]
+  })) as T[] | []
 }
