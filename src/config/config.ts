@@ -20,7 +20,6 @@ const configSchema = {
   },
   firebase: {
     serviceAccount: loader.json.hidden('SERVICE_ACCOUNT'),
-    databaseUrl: loader.string.hidden('FIREBASE_DATABASE_URL'),
   },
 }
 
