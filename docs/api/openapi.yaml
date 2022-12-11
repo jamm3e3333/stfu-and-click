@@ -15,7 +15,6 @@ info:
 
 servers:
   - url: '/'
-    description: Stfu and click application
 
 paths:
   /api/v1/sessions:
@@ -41,11 +40,17 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  token:
-                    type: string
-                    example: MjE5NjE5ZGQtOTY5Yi00NWRiLWFkYjgtMGJmMGU4MGM4MDUw
-                required: ['token']
+                allOf:
+                  - type: object
+                    properties:
+                      token:
+                        type: string
+                        example: 'caeb2a6a-bd1d-41cc-bfdf-5d4514ace591'
+                      teamId:
+                        type: string
+                        example: 'sfjli3j23li'
+                  - $ref: '#/components/schemas/User'
+                required: ['token', 'teamId']
         '400':
           $ref: '#/components/responses/BadRequestErrorResponse'
         '404':
@@ -82,8 +87,11 @@ paths:
                       token:
                         type: string
                         example: 'caeb2a6a-bd1d-41cc-bfdf-5d4514ace591'
+                      teamId:
+                        type: string
+                        example: 'adfjasdfoi3'
                   - $ref: '#/components/schemas/User'
-                required: ['token']
+                required: ['token', 'teamId']
         '400':
           $ref: '#/components/responses/BadRequestErrorResponse'
         '422':

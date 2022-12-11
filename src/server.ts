@@ -17,6 +17,8 @@ server.use(logger.express)
 server.use(validator)
 
 server.post('/api/v1/users', ctrl.service(userService.handlePostUser))
+server.post('/api/v1/sessions', ctrl.service(userService.handlePostSession))
+
 server.get('/api/v1/teams', ctrl.service(teamService.handleGetTeams))
 server.get('/api/v1/teams/:teamId', ctrl.service(teamService.handleDetailTeam))
 server.post(
