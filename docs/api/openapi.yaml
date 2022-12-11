@@ -2,15 +2,26 @@ openapi: '3.0.2'
 info:
   title: STFU AND CLICK APP
   version: '1.0.0'
+  description: |
+    # Error codes
+
+    ### Description of codes for `422 Unprocessable entity` responses
+
+    | Code | Description |
+    |---|---|
+    | U4000 | User already exists. |
+    | U4001 | Invalid email. |
+    | T4001 | Invalid team name. |
+
 servers:
   - url: '/'
-    description: stfu and click app
+    description: Stfu and click application
 
 paths:
   /api/v1/sessions:
     post:
       operationId: createSession
-      summary: Authenticate user
+      summary: Get user session
       tags:
         - Sessions
       requestBody:
@@ -37,6 +48,8 @@ paths:
                 required: ['token']
         '400':
           $ref: '#/components/responses/BadRequestErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
   /api/v1/users:
     post:
       operationId: createUser
@@ -73,6 +86,15 @@ paths:
                 required: ['token']
         '400':
           $ref: '#/components/responses/BadRequestErrorResponse'
+        '422':
+          description: Invalid data
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/U4000'
+                  - $ref: '#/components/schemas/U4001'
+                  - $ref: '#/components/schemas/T4001'
   /api/v1/addTeamClick/{teamId}:
     post:
       operationId: addTeamClick
@@ -94,6 +116,10 @@ paths:
           description: ok
         '400':
           $ref: '#/components/responses/BadRequestErrorResponse'
+        '401':
+          $ref: '#/components/responses/NotAuthenticatedErrorResponse'
+        '403':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /api/v1/teams:
     get:
       operationId: getTeams
@@ -131,6 +157,14 @@ paths:
         summary: Get team by teamId
         tags:
           - Teams
+        parameters:
+          - name: teamId
+            in: path
+            description: Unique team ID. See `/teams`
+            schema:
+              type: string
+              example: 123456
+            required: true
         responses:
           '200':
             description: ok
@@ -156,7 +190,7 @@ paths:
             $ref: '#/components/responses/BadRequestErrorResponse'
 components:
   securitySchemes:
-    bearerAuth:
+    bearer:
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -208,6 +242,24 @@ components:
           type: string
         stack:
           type: string
+    U4000:
+      type: object
+      properties:
+        code:
+          type: string
+          example: U4000
+    U4001:
+      type: object
+      properties:
+        code:
+          type: string
+          example: U4001
+    T4001:
+      type: object
+      properties:
+        code:
+          type: string
+          example: T4001
   parameters:
     Id:
       name: id
@@ -224,8 +276,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
-    UnprocessableEntityErrorResponse:
-      description: "Validation isn't passing - unprocessable_entity"
+    NotAuthenticatedErrorResponse:
+      description: Unauthorized access
       content:
         application/json:
           schema:
@@ -242,37 +294,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
-    ForbiddenErrorResponse:
-      description: 'Permission denied - forbidden'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-    MethodNotAllowedResponse:
-      description: 'Method not allowed'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-    TooManyRequestsResponse:
-      description: 'Too many requests'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-    BadGatewayErrorResponse:
-      description: 'Bad gateway'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-  requestBodies:
-    RefreshTokenRequestBody:
-      content:
-        application/json:
-          schema:
-            properties:
-              refreshToken:
-                type: string
-            required:
-              - refreshToken
