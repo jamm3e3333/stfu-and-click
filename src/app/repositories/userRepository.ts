@@ -3,14 +3,14 @@ import { FieldPath } from 'firebase-admin/firestore'
 import { E_CODES } from '../errors'
 import { NotAuthorized, ValidationError } from '../errors/classes'
 
-const userRepository = firestore.collection('users')
-
 export interface User {
   id: string
   email: string
   clickCount?: number
   teamId: string
 }
+
+const userRepository = firestore.collection('users')
 
 export const createUser = async (user: Pick<User, 'email' | 'teamId'>) => {
   const existingUser = (
@@ -37,6 +37,11 @@ export const getUsersForTeamIds = async (teamIds: string[]) =>
     userRepository.where('teamId', 'in', teamIds).get()
   )
 
+export const getUserForEmail = async (email: string) =>
+  getDataFromQuerySnapshots<User>(
+    userRepository.where('email', '==', email).get()
+  )
+
 export const updateUserClickForTeam = async (
   userId: string,
   teamId: string
@@ -49,8 +54,9 @@ export const updateUserClickForTeam = async (
     throw new NotAuthorized()
   }
   return user.forEach(async u => {
+    const clickCount = Number(u.data()?.clickCount ?? 0)
     await u.ref.update({
-      clickCount: Number(u.data()?.clickCount) + 1 ?? 1,
+      clickCount: isNaN(clickCount) ? 1 : clickCount + 1,
     })
   })
 }

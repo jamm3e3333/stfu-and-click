@@ -1,12 +1,20 @@
 import * as openapi from '../../openapi-gen'
-import { createUser } from '../repositories/userRepository'
+import { createUser, getUserForEmail } from '../repositories/userRepository'
 import * as ctrl from '../controllers'
 import * as util from '../util'
 import * as jwt from '../services/jwtService'
 import * as teamRepo from '../repositories/teamRepository'
 import { validateEmail } from '../../utils/validationUtils'
-import { ValidationError } from '../errors/classes'
+import { NotFound, ValidationError } from '../errors/classes'
 import { E_CODES } from '../errors'
+
+const validateUserEmail = (email: string) => {
+  if (!validateEmail(email)) {
+    throw new ValidationError(E_CODES.U4001)
+  }
+}
+
+const modifyUserEmail = (email: string) => email.trim().toLowerCase()
 
 export const handlePostUser = async (
   context: any
@@ -14,10 +22,8 @@ export const handlePostUser = async (
   util.pipe(
     () => ctrl.getContextTyped<openapi.paths['/api/v1/users']>(context),
     async context => {
-      const email = context.requestBody.email.trim().toLowerCase()
-      if (!validateEmail(email)) {
-        throw new ValidationError(E_CODES.U4001)
-      }
+      const email = modifyUserEmail(context.requestBody.email)
+      validateUserEmail(email)
       const teamName = context.requestBody.teamName.trim()
       if (!teamName.length) {
         throw new ValidationError(E_CODES.T4001)
@@ -38,6 +44,33 @@ export const handlePostUser = async (
           id: (user as any).id,
         },
       })
-      return { token, email, id: user.id }
+      return { token, email, id: user.id, teamId: team.id }
+    }
+  )(context)
+
+export const handlePostSession = async (
+  context: any
+): Promise<
+  openapi.OpenAPIRouteResponseBody<openapi.paths['/api/v1/sessions']>
+> =>
+  util.pipe(
+    () => ctrl.getContextTyped<openapi.paths['/api/v1/sessions']>(context),
+    async context => {
+      const email = modifyUserEmail(context.requestBody.email)
+      validateUserEmail(email)
+      const [user] = await getUserForEmail(email)
+      if (!user) {
+        throw new NotFound()
+      }
+      const [team] = await teamRepo.getTeamForId({ id: user.teamId })
+      const token = jwt.generateToken({
+        user: { email: user.email, id: user.id },
+      })
+      return {
+        token,
+        teamId: team.id,
+        email: user.email,
+        id: user.id,
+      }
     }
   )(context)
