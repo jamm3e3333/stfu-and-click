@@ -7,7 +7,7 @@ firebase.initializeApp({
 
 export default firebase.firestore()
 
-export const getDataFromQuerySnapshot = async <T>(
+export const getDataFromQuerySnapshots = async <T>(
   snapshots: Promise<FirebaseFirestore.QuerySnapshot>
 ) => {
   return (await snapshots).docs.map(x => ({

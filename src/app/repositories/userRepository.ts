@@ -1,5 +1,5 @@
 import baseLogger from '../../logger'
-import firestore, { getDataFromQuerySnapshot } from '../database/firestore'
+import firestore, { getDataFromQuerySnapshots } from '../database/firestore'
 import { E_CODES } from '../errors'
 import { ValidationError } from '../errors/classes'
 
@@ -26,7 +26,7 @@ export const createUser = async (user: Pick<User, 'email' | 'teamId'>) => {
 }
 
 export const getUserForUserId = async (user: Pick<User, 'id'>) => {
-  const [userData] = await getDataFromQuerySnapshot<User>(
+  const [userData] = await getDataFromQuerySnapshots<User>(
     userRepository.where('id', '==', user.id).limit(1).get()
   )
   return userData
