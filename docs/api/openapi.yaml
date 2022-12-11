@@ -63,10 +63,13 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  token:
-                    type: string
-                    example: 'caeb2a6a-bd1d-41cc-bfdf-5d4514ace591'
+                allOf:
+                  - type: object
+                    properties:
+                      token:
+                        type: string
+                        example: 'caeb2a6a-bd1d-41cc-bfdf-5d4514ace591'
+                  - $ref: '#/components/schemas/User'
                 required: ['token']
         '400':
           $ref: '#/components/responses/BadRequestErrorResponse'

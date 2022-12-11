@@ -145,8 +145,10 @@ export interface operations {
         content: {
           "application/json": {
             /** @example caeb2a6a-bd1d-41cc-bfdf-5d4514ace591 */
-            token: string;
-          };
+            token?: string;
+          } & components["schemas"]["User"] & {
+              token: unknown;
+            };
         };
       };
       400: components["responses"]["BadRequestErrorResponse"];
