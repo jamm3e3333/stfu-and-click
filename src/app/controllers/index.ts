@@ -52,7 +52,15 @@ const createHttpCtx = async (httpContext: { req: Request; res: Response }) => {
   }
 }
 
-type ServiceHandler = (context: HttpContext) => PromiseLike<any>
+export const getContextTyped = <TOpenAPIRoute, TMethod extends string = 'post'>(
+  context: any
+) => {
+  return context as HttpContextTyped<TOpenAPIRoute, TMethod>
+}
+
+type ServiceHandler = <Route, Method extends string = 'post'>(
+  context: HttpContextTyped<Route, Method>
+) => PromiseLike<any>
 
 export const service = (
   serviceHandler: ServiceHandler,
