@@ -10,6 +10,7 @@ const configSchema = {
     port: loader.number('PORT'),
     nodeEnv: loader.custom(x => x as 'development' | 'production')('NODE_ENV'),
   },
+  enableTests: loader.bool('ENABLE_TESTS'),
   logger: {
     defaultLevel: loader.custom(x => x as Level)('LOGGER_DEFAULT_LEVEL'),
     pretty: loader.bool('LOGGER_PRETTY'),
