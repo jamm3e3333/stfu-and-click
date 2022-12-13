@@ -103,7 +103,7 @@ paths:
                   - $ref: '#/components/schemas/U4000'
                   - $ref: '#/components/schemas/U4001'
                   - $ref: '#/components/schemas/T4001'
-  /api/v1/addTeamClick/{teamId}:
+  /api/v1/teamClick/{teamId}:
     post:
       operationId: addTeamClick
       summary: Add click to the team

@@ -1,5 +1,5 @@
 import 'source-map-support/register'
-import logger from './logger'
+import logger from './app/logger'
 import server from './server'
 
 import config, { safeConfig } from './config'
