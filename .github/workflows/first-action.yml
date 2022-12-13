@@ -15,5 +15,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Test
+        env:
+          ENABLE_TESTS: true
         run: npm run test
         
