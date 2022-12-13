@@ -94,13 +94,11 @@ export const handleDetailTeam = async (
 export const handlePostClickForTeam = async (
   context: any
 ): Promise<
-  openapi.OpenAPIRouteResponseBody<
-    openapi.paths['/api/v1/addTeamClick/{teamId}']
-  >
+  openapi.OpenAPIRouteResponseBody<openapi.paths['/api/v1/teamClick/{teamId}']>
 > =>
   util.pipe(
     () =>
-      ctrl.getContextTyped<openapi.paths['/api/v1/addTeamClick/{teamId}']>(
+      ctrl.getContextTyped<openapi.paths['/api/v1/teamClick/{teamId}']>(
         context
       ),
     util.checkAuth,

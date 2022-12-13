@@ -10,7 +10,7 @@ export interface paths {
   "/api/v1/users": {
     post: operations["createUser"];
   };
-  "/api/v1/addTeamClick/{teamId}": {
+  "/api/v1/teamClick/{teamId}": {
     post: operations["addTeamClick"];
   };
   "/api/v1/teams": {
