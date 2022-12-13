@@ -9,7 +9,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.8.1
+          node-version: 16
       - name: Install
         run: npm ci
       - name: Build
