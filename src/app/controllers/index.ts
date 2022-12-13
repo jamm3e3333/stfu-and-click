@@ -31,7 +31,7 @@ export type HttpContextTyped<TOpenAPIRoute, TMethod extends string = 'post'> = {
 } & Pick<HttpContext, 'authenticated' | 'baseUrl' | 'user'>
 
 const getBaseUrl = (req: Request) => {
-  return `${req.protocol}://${req.get('host') ?? ''}`
+  return `${req.protocol}://${req.get('hostname') ?? ''}`
 }
 
 const createHttpCtx = async (httpContext: { req: Request; res: Response }) => {
@@ -80,6 +80,9 @@ export const service = (
     }
   })
 
+export const httpRootHandler: RequestHandler = (req, res, _next) => {
+  res.status(200).send('Hello')
+}
 export const httpFinalHandler: RequestHandler = (req, res, _next) => {
   res.status(404)
   res.send({
